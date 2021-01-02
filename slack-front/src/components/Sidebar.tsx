@@ -52,7 +52,7 @@ export function Sidebar() {
       // variables: { channelId: selectedChannel.id },
       document: membershipSubscription,
       updateQuery: (prev: SidebarQuery[], { subscriptionData }: any) => {
-        console.log(prev);
+        // console.log(prev);
         if (!subscriptionData.data) return prev;
 
         return Object.assign({}, prev, subscriptionData.data);

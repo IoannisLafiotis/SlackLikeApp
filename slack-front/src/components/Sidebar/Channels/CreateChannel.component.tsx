@@ -54,9 +54,9 @@ export function Finder(props: Props) {
             mutation={CreateChannelMutation}
             onCompleted={(data: any) => {
               // console.log(data.data.data.insert_Chanel.returning[0].id)
-              console.log(Object.keys(data.insert_Chanel!.returning));
-              console.log(data.insert_Chanel.returning[0].id);
-              console.log(user);
+              // console.log(Object.keys(data.insert_Chanel!.returning));
+              // console.log(data.insert_Chanel.returning[0].id);
+              // console.log(user);
 
               createMembership({
                 variables: {

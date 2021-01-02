@@ -13,6 +13,7 @@ import { allChannelsQuery } from "../../../data/queries";
 import { Form } from "../../../styles/ModalButtons";
 import { Input } from "../../../styles/Input.styles";
 import { joinChannel } from "../../../data/mutations";
+import { DataItem, DataContainer } from "../../../styles/DataModal.styles";
 // import { joinChannel } from 'data/mutations';
 // import { DataContainer, DataItem } from 'styles/DataModal.styles';
 // import { Channel } from 'components/Channels';
@@ -21,21 +22,12 @@ console.log("removed git!")
 interface Props {
   exitCallback: () => void;
 }
-const ChannelItem = styled.div`
-  padding: 1rem 2rem;
-  border-top: 1px solid ${(props) => props.theme.borderColorLight};
-  box-sizing: border-box;
-  cursor: pointer;
-`;
 
-const SearchInput = styled(Input)`
+export const SearchInput = styled(Input)`
   width: 100%;
   box-sizing: border-box;
 `;
-const ChannelContainer = styled.div`
-  max-height: calc(100vh - 200px);
-  box-sizing: auto;
-`;
+
 
 export function JoinChannel(props: Props) {
     const { user, dispatch } = React.useContext(StoreContext);
@@ -74,7 +66,7 @@ export function JoinChannel(props: Props) {
     <Modal close={props.exitCallback} title="Join Channel">
      
             <>
-              <Form>
+              <Form >
                 <SearchInput
                   name="channelName"
                   id="channelName"
@@ -93,11 +85,11 @@ export function JoinChannel(props: Props) {
             return <p>loading...</p>;
           }
           return (
-              <ChannelContainer>
+              <DataContainer>
                 {data.Chanel.map((channel: { id: string; name: string , Memberships: any }) => (
-                  <ChannelItem key={channel.id} onClick={() => selectChannel({id:channel.id, name:channel.name}, channel.Memberships)}># {channel.name}</ChannelItem>
+                  <DataItem key={channel.id} onClick={() => selectChannel({id:channel.id, name:channel.name}, channel.Memberships)}># {channel.name}</DataItem>
                 ))}
-              </ChannelContainer>
+              </DataContainer>
           
            ) }}
               </Query>

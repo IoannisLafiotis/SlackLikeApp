@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { createMembershipTemplateQuery } from "../utils";
 
 export const messageQuery = gql`
   query MessageQuery($channelId: uuid) {
@@ -14,13 +15,23 @@ export const messageQuery = gql`
 `;
 
 export const membershipQuery = gql`
-  query SidebarQuery {
-    Membership(where: { userId: { _eq: "user1" } }) {
+  query SidebarQuery($user: String!) {
+    Chanel(where: { Memberships: { userId: { _eq: $user } } }) {
       id
-      direct
-      Chanel {
+      name
+      Memberships {
+        userId
+        direct
         id
-        name
+        User {
+          status
+          username
+        }
+      }
+      Memberships_aggregate {
+        aggregate {
+          count
+        }
       }
     }
   }
@@ -43,14 +54,10 @@ export const allChannelsQuery = gql`
   }
 `;
 
-
 export const allUsersQuery = gql`
   query UsersQuery($currentUserId: String, $filter: String) {
     User(
-      where: {
-       id:{_neq: $currentUserId }
-       username: {_ilike: $filter}
-      }
+      where: { id: { _neq: $currentUserId }, username: { _ilike: $filter } }
     ) {
       id
       username
@@ -58,38 +65,30 @@ export const allUsersQuery = gql`
   }
 `;
 
-export const checkMembership = gql`
-  query ExistingMembership($user1: String, $user2: String) {
-    Membership(
+export const checkMembership = (usersId: string[]) => gql`
+  query ExistingMembership {
+    Chanel(
       where: {
-        userId:{_eq: $user1},
-        direct: {_eq: true},
-        Chanel: {
-            Memberships: {
-                userId: {_eq: $user2}
-            }
-        }}) {
-      id
-      Chanel {
-          name
-          id
+        _and: [
+          {Memberships: {direct: {_eq: true}}},
+          ${createMembershipTemplateQuery(usersId).join(",")}
+        ]
       }
+    ) {
+      id
+      name
     }
   }
 `;
 
 export const allMembershipsForUserQuery = gql`
   query AllMembershipsForUserQuery($currentUserId: String) {
-    Membership(
-      where: {
-       id:{_neq: $currentUserId }
-      }
-    ) {
+    Membership(where: { id: { _neq: $currentUserId } }) {
       id
       Chanel {
-          Memberships {
-              userId
-          }
+        Memberships {
+          userId
+        }
       }
     }
   }

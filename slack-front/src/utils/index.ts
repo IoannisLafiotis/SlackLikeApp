@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 export function useWhyDidYouUpdate(name: string, props: any) {
   // Get a mutable ref object where we can store props ...
@@ -12,20 +12,20 @@ export function useWhyDidYouUpdate(name: string, props: any) {
       // Use this object to keep track of changed props
       const changesObj: any = {};
       // Iterate through keys
-      allKeys.forEach(key => {
+      allKeys.forEach((key) => {
         // If previous is different from current
         if (previousProps.current[key] !== props[key]) {
           // Add to changesObj
           changesObj[key] = {
             from: previousProps.current[key],
-            to: props[key]
+            to: props[key],
           };
         }
       });
 
       // If changesObj not empty then output to console
       if (Object.keys(changesObj).length) {
-        console.log('[why-did-you-update]', name, changesObj);
+        console.log("[why-did-you-update]", name, changesObj);
       }
     }
 
@@ -35,9 +35,9 @@ export function useWhyDidYouUpdate(name: string, props: any) {
 }
 
 export function createMembershipTemplateQuery(ids: string[]) {
-  return ids.map(id => `{Memberships: {userId: {_eq: "${id}"}}}`);
+  return ids.map((id) => `{Memberships: {userId: {_eq: "${id}"}}}`);
 }
 
 export function createMembershipTemplateMutation(ids: string[]) {
-  return ids.map(id => `{ userId: "${id}", direct: true }`);
+  return ids.map((id) => `{ userId: "${id}", direct: true }`);
 }

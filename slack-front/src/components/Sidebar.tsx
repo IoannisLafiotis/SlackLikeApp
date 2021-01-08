@@ -6,6 +6,7 @@ import { Query, QueryResult } from "react-apollo";
 import { membershipQuery } from "../data/queries";
 import { membershipSubscription } from "../data/subscriptions";
 import { SidebarQuery } from "../generated/SidebarQuery";
+import { StoreContext } from "../store/store";
 // import { MessageQuery_Mesage } from "../generated/MessageQuery";
 
 const SidebarContainer = styled.div`
@@ -21,7 +22,7 @@ const Header = styled.header`
   grid-template-columns: 1fr 25px;
   font-size: 1.2rem;
 `;
-const Status = styled.span`
+export const Status = styled.span`
   height: 1.2rem;
   width: 1.2rem;
   border-radius: 100%;
@@ -40,13 +41,9 @@ const UsernameContainer = styled.div`
   margin-right: 0.5rem;
 `;
 
-interface Membership {
-  direct: boolean;
-  id: string;
-  Chanel: Channel;
-}
-
 export function Sidebar() {
+  const { user } = React.useContext(StoreContext);
+
   const subscription = (subscribeToMore: any) => {
     subscribeToMore({
       // variables: { channelId: selectedChannel.id },
@@ -60,8 +57,8 @@ export function Sidebar() {
     });
   };
   return (
-    <Query query={membershipQuery}>
-      {({ loading, data, subscribeToMore }: QueryResult<SidebarQuery>) => {
+    <Query query={membershipQuery} variables={{ user }}>
+      {({ loading, data, subscribeToMore }: QueryResult) => {
         subscription(subscribeToMore);
         return (
           <SidebarContainer>
@@ -76,23 +73,22 @@ export function Sidebar() {
                 <button>Log out</button>
               </UsernameContainer>
             </Header>
-            {!loading && data && data.Membership ? (
+            {!loading && data && data.Chanel ? (
               <>
                 <Channels
-                  channels={(data.Membership as Membership[])
-                    .filter((membership) => !membership.direct)
-                    .map((membership) => membership.Chanel)}
+                  channels={(data.Chanel as Channel[]).filter(
+                    (chanel) => !chanel.Memberships[0].direct
+                  )}
                 />
                 <DirectMessages
-                  channels={(data.Membership as Membership[]).reduce(
-                    (acc, value) => {
-                      if (value.direct) {
-                        return [...acc, value.Chanel];
-                      }
-                      return acc;
-                    },
-                    [] as Channel[]
-                  )}
+                  channels={(data.Chanel as Channel[]).reduce((acc, value) => {
+                    if (value.Memberships[0].direct) {
+                      return [...acc, value];
+                    }
+                    console.log(data.Chanel);
+
+                    return acc;
+                  }, [] as Channel[])}
                 />
               </>
             ) : null}

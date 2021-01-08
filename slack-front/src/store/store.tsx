@@ -39,8 +39,9 @@ export interface User {
 
 type SelectedChannelAction = {
   type: Actions.SELECTED_CHANNEL;
-  payload: { id: string; name: string };
+  payload: { id: string; name: string; members: number };
 };
+
 type UserAction = { type: Actions.USER; payload?: any };
 
 // type Action = { type: Actions.SELECTED_CHANNEL, payload?: any };
@@ -50,7 +51,7 @@ interface State {
   selectedChannel: {
     id: string;
     name: string;
-    //   members: number;
+    members: number;
     //   direct: boolean;
   };
   user: string;

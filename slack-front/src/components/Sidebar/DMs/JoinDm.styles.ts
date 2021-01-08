@@ -1,11 +1,11 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const colors = [
-  'RebeccaPurple',
-  'Teal',
-  'Navy',
-  'MediumPurple',
-  'MediumSeaGreen'
+  "RebeccaPurple",
+  "Teal",
+  "Navy",
+  "MediumPurple",
+  "MediumSeaGreen",
 ];
 
 export const UserTag = styled.div`
@@ -18,7 +18,7 @@ export const UserTag = styled.div`
 `;
 
 export const UserDeleteTag = styled.span.attrs({
-  role: 'button'
+  role: "button",
 })`
   color: white;
   font-size: 1.2rem;

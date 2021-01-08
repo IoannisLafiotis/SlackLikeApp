@@ -35,11 +35,22 @@ const Button = styled.button`
   }
 `;
 
+export interface Membership {
+  direct: boolean;
+  id: string;
+  userId: string;
+}
+
 export interface Channel {
   id: string;
   name: string;
-  // Memberships: Membership[];
-  // Memberships_aggregate: Memberships_aggregate;
+  Memberships: Membership[];
+  Memberships_aggregate: Memberships_aggregate;
+}
+interface Memberships_aggregate {
+  aggregate: {
+    count: number;
+  };
 }
 
 interface ChanelProps {
@@ -60,7 +71,11 @@ export function Channels({ channels }: ChanelProps) {
   //   false
   // );
 
-  const selectChannel = (channel: { id: string; name: string }) => {
+  const selectChannel = (channel: {
+    id: string;
+    name: string;
+    members: number;
+  }) => {
     dispatch({
       type: Actions.SELECTED_CHANNEL,
       payload: channel,
@@ -86,7 +101,11 @@ export function Channels({ channels }: ChanelProps) {
         {channels.map((channel) => (
           <Item
             onClick={() =>
-              selectChannel({ id: channel.id, name: channel.name })
+              selectChannel({
+                id: channel.id,
+                name: channel.name,
+                members: channel.Memberships_aggregate.aggregate.count,
+              })
             }
             key={channel.id}
           >

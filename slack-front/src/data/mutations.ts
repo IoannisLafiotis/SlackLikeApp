@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { createMembershipTemplateMutation } from "../utils";
 
-export const CreateChannelMutation = gql`
+export const createChannelMutation = gql`
   mutation CreateChannel($name: String) {
     insert_Chanel(objects: { name: $name, group: "" }) {
       returning {
@@ -11,7 +11,7 @@ export const CreateChannelMutation = gql`
   }
 `;
 
-export const CreateMembership = gql`
+export const createMembership = gql`
   mutation CreateMembership($userId: String, $channelId: uuid) {
     insert_Membership(objects: { userId: $userId, channelId: $channelId }) {
       returning {

@@ -42,7 +42,7 @@ const UsernameContainer = styled.div`
 `;
 
 export function Sidebar() {
-  const { user } = React.useContext(StoreContext);
+  const { user , auth0} = React.useContext(StoreContext);
 
   const subscription = (subscribeToMore: any) => {
     subscribeToMore({
@@ -57,7 +57,7 @@ export function Sidebar() {
     });
   };
   return (
-    <Query query={membershipQuery} variables={{ user }}>
+    <Query query={membershipQuery} variables={{ user: user.id }}>
       {({ loading, data, subscribeToMore }: QueryResult) => {
         subscription(subscribeToMore);
         return (
@@ -70,7 +70,8 @@ export function Sidebar() {
               </div>
               <UsernameContainer>
                 <Status></Status>
-                <button>Log out</button>
+                {user.username}
+                <button onClick={() => auth0!.logout()}>Log out</button>
               </UsernameContainer>
             </Header>
             {!loading && data && data.Chanel ? (

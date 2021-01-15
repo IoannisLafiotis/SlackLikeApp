@@ -49,7 +49,7 @@ export function DirectMessages({ channels }: DirectMessageProps) {
 
   function DMTitles(channel: Channel) {
     return channel.Memberships.reduce((acc, value: any) => {
-      if (value.userId !== user) {
+      if (value.userId !== user.id) {
         return [...acc, value.User.username];
       }
       return acc;

@@ -12,8 +12,8 @@ import { Mutation } from "react-apollo";
 // import { CreateChannel, CreateChannel_insert_Chanel } from '../generated/CreateChannel';
 import { StoreContext } from "../../../store/store";
 import {
-  CreateMembership,
-  CreateChannelMutation,
+  createMembership,
+  createChannelMutation,
 } from "../../../data/mutations";
 import { Modal } from "../../Modal/Modal.component";
 import { Input } from "../../../styles/Input.styles";
@@ -48,10 +48,10 @@ export function Finder(props: Props) {
   //   });
   return (
     <Modal close={props.exitCallback} title="Create Channel">
-      <Mutation mutation={CreateMembership} update={() => props.exitCallback()}>
+      <Mutation mutation={createMembership} update={() => props.exitCallback()}>
         {(createMembership: any) => (
           <Mutation
-            mutation={CreateChannelMutation}
+            mutation={createChannelMutation}
             onCompleted={(data: any) => {
               // console.log(data.data.data.insert_Chanel.returning[0].id)
               // console.log(Object.keys(data.insert_Chanel!.returning));
@@ -60,7 +60,7 @@ export function Finder(props: Props) {
 
               createMembership({
                 variables: {
-                  userId: user,
+                  userId: user.id,
                   channelId: data.insert_Chanel!.returning[0].id,
                 },
               });

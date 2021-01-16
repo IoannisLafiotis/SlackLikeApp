@@ -62,7 +62,9 @@ export function InputMessage() {
           <InputStyle
             name="message"
             type="text"
-            placeholder={`Message to/in ${selectedChannel && selectedChannel.name}`}
+            placeholder={`Message to/in ${
+              selectedChannel && selectedChannel.name
+            }`}
             onChange={onChangeInput}
           />
           <SubmitButton disabled={inputValue === ""} type="submit">

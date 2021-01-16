@@ -17,28 +17,26 @@ import { getMainDefinition } from "apollo-utilities";
 import { StoreContextProvider } from "./store/store";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./theme/theme";
-import config from './auth_config.json';
-import { createBrowserHistory } from 'history';
-import { setContext } from 'apollo-link-context';
-import createAuth0Client from '@auth0/auth0-spa-js';
+import config from "./auth_config.json";
+import { createBrowserHistory } from "history";
+import { setContext } from "apollo-link-context";
+import createAuth0Client from "@auth0/auth0-spa-js";
 
 const history = createBrowserHistory();
 
-
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
+  console.log(headers);
+  console.log(token);
   // return the headers to the context so httpLink can read them
   return {
     headers: {
       ...headers,
-      'x-hasura-admin-secret':process.env.REACT_APP_HASURA_GRAPHQL_ADMIN_SECRET,
-
-      Authorization: token ? `Bearer ${token}` : ''
-    }
+      Authorization: token ? `Bearer ${token}` : "",
+    },
   };
 });
-
 
 const HASURA_SECRET = process.env.REACT_APP_HASURA_GRAPHQL_ADMIN_SECRET;
 console.log(`${HASURA_SECRET}`);
@@ -49,9 +47,7 @@ const wsLink = new WebSocketLink({
     reconnect: true,
     connectionParams: {
       headers: {
-        'x-hasura-admin-secret':process.env.REACT_APP_HASURA_GRAPHQL_ADMIN_SECRET,
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     },
   },
@@ -59,9 +55,9 @@ const wsLink = new WebSocketLink({
 const httpLink = new HttpLink({
   uri: `https://${process.env.REACT_APP_HASURA_ENDPOINT}`,
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('token')}`
-  }
-  });
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
 
 const link = split(
   ({ query }) => {
@@ -71,7 +67,7 @@ const link = split(
   wsLink,
   httpLink
 );
-
+console.log(link);
 // const link = ApolloLink.from([errorLink, authLink.concat(httpLink)]);
 
 const client = new ApolloClient<NormalizedCacheObject>({
@@ -92,26 +88,30 @@ const client = new ApolloClient<NormalizedCacheObject>({
   },
 });
 
+console.log(client);
 const App: React.FC = () => {
   const [user, setUser] = React.useState<any>(null);
+  console.log(user);
   React.useEffect(() => {
-    createAuth0Client(config).then(async auth0 => {
+    createAuth0Client(config).then(async (auth0) => {
       let user;
-      if (window.location.search.includes('code=')) {
+      if (window.location.search.includes("code=")) {
         await auth0.handleRedirectCallback();
         user = await auth0.getUser();
-        setUser({ username: user!.nickname, id: user!.sub, auth0});
-        history.replace('/');
+        setUser({ username: user!.nickname, id: user!.sub, auth0 });
+        history.replace("/");
       }
       const isAuthenticated = await auth0.isAuthenticated();
+      console.log(isAuthenticated);
+
       if (!isAuthenticated) {
         auth0.loginWithRedirect({ redirect_uri: "http://localhost:3000" });
       } else {
         user = await auth0.getUser();
         const token = (auth0 as any).cache.cache[
-          'default::openid profile email'
+          "default::openid profile email"
         ].id_token;
-        localStorage.setItem('token', token);
+        localStorage.setItem("token", token);
         setUser({ username: user!.nickname, id: user!.sub, auth0 });
       }
     });

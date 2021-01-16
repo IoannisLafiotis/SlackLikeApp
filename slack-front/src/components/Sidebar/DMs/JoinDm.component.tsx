@@ -157,7 +157,7 @@ export const JoinDM = (props: Props) => {
         ))}
         <Query
           query={allUsersQuery}
-          variables={{ currentUserId: user, filter: "%" }}
+          variables={{ currentUserId: user.id, filter: "%" }}
         >
           {({ data, loading, refetch }: QueryResult) => {
             console.log(user);
@@ -165,7 +165,7 @@ export const JoinDM = (props: Props) => {
             console.log(refetch);
             refetchRef.current = refetch;
 
-            if (loading) {
+            if (loading || !data) {
               return <p>loading...</p>;
             }
             return (

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { omit } from 'lodash';
-import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
+import { omit } from "lodash";
+import Auth0Client from "@auth0/auth0-spa-js/dist/typings/Auth0Client";
 
 export enum Actions {
   "SELECTED_CHANNEL",
@@ -13,14 +13,14 @@ const initialChannel = localStorage.getItem("selected_channel")
 
 const initialStoreValue = {
   selectedChannel: initialChannel,
-//   user: localStorage.getItem("current_user") || "",
+  //   user: localStorage.getItem("current_user") || "",
 
-    user: (localStorage.getItem('current_user') &&
-      JSON.parse(localStorage.getItem('current_user')!)) || {
-      username: '',
-      id: ''
-    },
-    auth0: null
+  user: (localStorage.getItem("current_user") &&
+    JSON.parse(localStorage.getItem("current_user")!)) || {
+    username: "",
+    id: "",
+  },
+  auth0: null,
 };
 
 export const StoreContext = React.createContext<Context>({
@@ -56,7 +56,7 @@ interface State {
     //   direct: boolean;
   };
   user: User;
-    auth0: Auth0Client | null;
+  auth0: Auth0Client | null;
 }
 
 interface Context extends State {
@@ -69,7 +69,11 @@ function storeReducer(state: State, action: Action): State {
     case Actions.SELECTED_CHANNEL:
       return { ...state, selectedChannel: action.payload };
     case Actions.USER:
-      return { ...state, user: omit(action.payload, ["auth0"]), auth0: Object.assign({}, action!.payload!.auth0 ) };
+      return {
+        ...state,
+        user: omit(action.payload, ["auth0"]),
+        auth0: Object.assign({}, action!.payload!.auth0),
+      };
     default:
       throw new Error();
   }
@@ -77,7 +81,7 @@ function storeReducer(state: State, action: Action): State {
 
 interface Props {
   children: React.ReactNode;
-    user: UserPayload | null;
+  user: UserPayload | null;
 }
 
 export function StoreContextProvider(props: Props) {
@@ -90,14 +94,15 @@ export function StoreContextProvider(props: Props) {
   }, [store.selectedChannel]);
 
   React.useEffect(() => {
-     
     //   const value = prompt("Select a user!!");
-      if (props.user) {
-        dispatch({ type: Actions.USER, payload: props.user });
-      
-        localStorage.setItem("current_user", JSON.stringify(omit(props.user, ["auth0"])));
-      }
-    
+    if (props.user) {
+      dispatch({ type: Actions.USER, payload: props.user });
+
+      localStorage.setItem(
+        "current_user",
+        JSON.stringify(omit(props.user, ["auth0"]))
+      );
+    }
   }, [props.user]);
   return (
     <StoreContext.Provider value={{ ...store, dispatch }}>

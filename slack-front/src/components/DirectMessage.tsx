@@ -4,7 +4,7 @@ import { Channel } from "./Channels";
 import { StoreContext, Actions } from "../store/store";
 import { Item } from "../styles/SidebarItem.styles";
 import { JoinDmComponent } from "./Sidebar/DMs/JoinDm.component";
-import { Status } from "./Sidebar";
+import { Status } from "./Sidebar/Channels/Status.component";
 
 const MessagesTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -67,25 +67,34 @@ export function DirectMessages({ channels }: DirectMessageProps) {
       </MessagesTitles>
 
       <ul>
-        {channels.map((channel) => (
-          <Item
-            onClick={() =>
-              selectChannel({
-                id: channel.id,
-                name: channel.name,
-                members: channel.Memberships_aggregate.aggregate.count,
-              })
-            }
-            key={channel.id}
-          >
-            {channel.Memberships.length === 2 ? (
-              <Status />
-            ) : (
-              <MembersCount>{channel.Memberships.length - 1}</MembersCount>
-            )}{" "}
-            {DMTitles(channel)}
-          </Item>
-        ))}
+        {channels.map((channel) => {
+          let status: any;
+          if (channel.Memberships.length === 2) {
+            status = (channel.Memberships.find(
+              (membership) => membership.userId !== user.id
+            )! as any).User.status;
+            return status;
+          }
+          return (
+            <Item
+              onClick={() =>
+                selectChannel({
+                  id: channel.id,
+                  name: channel.name,
+                  members: channel.Memberships_aggregate.aggregate.count,
+                })
+              }
+              key={channel.id}
+            >
+              {channel.Memberships.length === 2 ? (
+                <Status status={status} />
+              ) : (
+                <MembersCount>{channel.Memberships.length - 1}</MembersCount>
+              )}{" "}
+              {DMTitles(channel)}
+            </Item>
+          );
+        })}
       </ul>
     </>
   );
